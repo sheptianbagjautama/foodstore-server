@@ -3,8 +3,12 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
 var app = express();
+
+//IMPORT API
+const productRouter = require('./app/product/router');
+const categoryRouter = require('./app/category/router');
+const tagRouter = require('./app/tag/router');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -15,6 +19,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// ROUTER API
+app.use('/api', productRouter);
+app.use('/api', categoryRouter);
+app.use('/api', tagRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
