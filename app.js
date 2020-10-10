@@ -5,6 +5,9 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var app = express();
 
+// IMPORT MIDDLEWARE
+const { decodeToken } = require('./app/auth/middleware');
+
 //IMPORT API
 const productRouter = require('./app/product/router');
 const categoryRouter = require('./app/category/router');
@@ -20,6 +23,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+// MENGGUNAKAN MIDDLEWARE
+app.use(decodeToken());
 
 // ROUTER API
 app.use('/api', productRouter);

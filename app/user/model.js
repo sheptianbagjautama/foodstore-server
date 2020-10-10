@@ -35,26 +35,27 @@ let userSchema = Schema(
 	},
 	{ timestamps: true }
 );
-
-userSchema.path('email').validate(function(value) {
-	const EMAIL_RE = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
-	return EMAIL_RE.test(value);
-}, (attr) => `${attr.value} harus merupakan email yang valid!`);
-
 userSchema.path('email').validate(async function(value) {
 	try {
 		const count = await this.model('User').count({ email: value });
 		return !count;
-	} catch (error) {
-		throw error;
+	} catch (err) {
+		throw err;
 	}
 }, (attr) => `${attr.value} sudah terdaftar`);
 
+userSchema.path('email').validate(function(value) {
+	const emailRE = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+	return emailRE.test(value);
+}, (attr) => `${attr.value} harus merupakan email yang valid!`);
+
+// hashSync untuk mengkonversi password menjadi data yang tidak mudah di baca dan di enkripsi
 userSchema.pre('save', function(next) {
 	this.password = bcrypt.hashSync(this.password, HASH_ROUND);
 	next();
 });
 
-userSchema.plugin(AutoIncrement, { ic_field: 'customer_id' });
+// Agar field customer_id menjadi autoincrement
+userSchema.plugin(AutoIncrement, { inc_field: 'customer_id' });
 
 module.exports = model('User', userSchema);
