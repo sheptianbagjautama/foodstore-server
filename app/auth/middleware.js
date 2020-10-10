@@ -7,6 +7,7 @@ const User = require('../user/model');
 function decodeToken() {
 	return async function(req, res, next) {
 		try {
+			console.log('ini adalah fungsi decodeToken');
 			let token = getToken(req);
 			if (!token) return next();
 			req.user = jwt.verify(token, config.secretKey);
