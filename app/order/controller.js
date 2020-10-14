@@ -5,6 +5,7 @@ const CartItem = require('../cart-item/model');
 const DeliveryAddress = require('../delivery-address/model');
 const { policyFor } = require('../policy');
 const { subject } = require('@casl/ability');
+const { parse } = require('dotenv/types');
 
 async function store(req, res, next) {
 	let policy = policyFor(req.user);
@@ -78,6 +79,46 @@ async function store(req, res, next) {
 	}
 }
 
+async function index(req, res, next) {
+	let policy = policyFor(req.user);
+
+	if (!policy.can('view', 'Order')) {
+		return res.json({
+			error: 1,
+			message: `You're not allowed to perform this action`
+		});
+	}
+
+	try {
+		let { limit = 10, skip = 0 } = req.query;
+		let count = await Order.find({ user: req.user._id }).countDocuments();
+
+		let orders = await Order.find({ user: req.user._id })
+			.limit(parseInt(limit))
+			.skip(parseInt(skip))
+			.populate('order_items')
+			.sort('-createdAt');
+
+		return res.json({
+			//Schema Order memiliki field virtual yaitu items_count jadi kita harus mapping dan menggunakan
+			//toJson virtuals true
+			data: orders.map((order) => order.toJSON({ virtuals: true })),
+			count
+		});
+	} catch (err) {
+		if (err && err.name == 'ValidationError') {
+			return res.json({
+				error: 1,
+				message: err.message,
+				fields: err.errors
+			});
+		}
+
+		next(err);
+	}
+}
+
 module.exports = {
-	store
+	store,
+	index
 };

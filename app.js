@@ -16,6 +16,7 @@ const authRouter = require('./app/auth/router');
 const wilayahRouter = require('./app/wilayah/router');
 const deliveryRouter = require('./app/delivery-address/router');
 const cartRouter = require('./app/cart/router');
+const orderRouter = require('./app/order/router');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -37,6 +38,7 @@ app.use('/auth', authRouter);
 app.use('/api', wilayahRouter);
 app.use('/api', deliveryRouter);
 app.use('/api', cartRouter);
+app.use('/api', orderRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
