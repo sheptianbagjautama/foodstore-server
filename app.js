@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var app = express();
+const cors = require('cors');
 
 // IMPORT MIDDLEWARE
 const { decodeToken } = require('./app/auth/middleware');
@@ -17,6 +18,7 @@ const wilayahRouter = require('./app/wilayah/router');
 const deliveryRouter = require('./app/delivery-address/router');
 const cartRouter = require('./app/cart/router');
 const orderRouter = require('./app/order/router');
+const invoiceRouter = require('/app/invoice/router');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -27,6 +29,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Pengunaan cors agar api dapat diakses oleh domain lain
+app.use(cors());
 // MENGGUNAKAN MIDDLEWARE
 app.use(decodeToken());
 
@@ -39,6 +44,7 @@ app.use('/api', wilayahRouter);
 app.use('/api', deliveryRouter);
 app.use('/api', cartRouter);
 app.use('/api', orderRouter);
+app.use('/api', invoiceRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
