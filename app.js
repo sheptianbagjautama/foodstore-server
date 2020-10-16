@@ -18,7 +18,7 @@ const wilayahRouter = require('./app/wilayah/router');
 const deliveryRouter = require('./app/delivery-address/router');
 const cartRouter = require('./app/cart/router');
 const orderRouter = require('./app/order/router');
-const invoiceRouter = require('/app/invoice/router');
+const invoiceRouter = require('./app/invoice/router');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

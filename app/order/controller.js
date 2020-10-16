@@ -5,7 +5,6 @@ const CartItem = require('../cart-item/model');
 const DeliveryAddress = require('../delivery-address/model');
 const { policyFor } = require('../policy');
 const { subject } = require('@casl/ability');
-const { parse } = require('dotenv/types');
 
 async function store(req, res, next) {
 	let policy = policyFor(req.user);

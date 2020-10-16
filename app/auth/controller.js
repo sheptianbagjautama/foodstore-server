@@ -17,6 +17,7 @@ async function login(req, res, next) {
 		// (2) simpan token tersebut ke user terkait
 		await User.findOneAndUpdate({ _id: user._id }, { $push: { token: signed } }, { new: true });
 
+		console.log(await User.find({}));
 		// (3) response ke _client_
 		return res.json({
 			message: 'logged in successfully',

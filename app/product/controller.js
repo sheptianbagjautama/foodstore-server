@@ -8,6 +8,8 @@ const { policyFor } = require('../policy');
 
 async function index(req, res, next) {
 	try {
+		console.log('ini adalah data produk');
+		console.log(Product.find({}));
 		let { limit = 10, skip = 0, q = '', category = '', tags = [] } = req.query;
 		let criteria = {};
 		if (q.length) {
