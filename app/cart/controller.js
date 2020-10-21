@@ -18,13 +18,7 @@ async function update(req, res, next) {
 		const products = await Product.find({ _id: { $in: productIds } });
 
 		let cartItems = items.map((item) => {
-			// let relatedProduct = products.find((product) => product._id.toString() === item._id);
-			let relatedProduct = products.find((product) => {
-				product._id.toString() === item._id;
-				console.log(product._id);
-				console.log(product._id.toString());
-			});
-
+			let relatedProduct = products.find((product) => product._id.toString() === item._id);
 			return {
 				_id: relatedProduct._id,
 				product: relatedProduct._id,
