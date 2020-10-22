@@ -31,7 +31,7 @@ async function update(req, res, next) {
 		});
 
 		// kita akan menghapus terlebih dahulu semua item yang ada di cartitems yang dimiliki oleh user yang sedang login
-		// await CartItem.deleteMany({ user: req.user._id });
+		await CartItem.deleteMany({ user: req.user._id });
 
 		//update / simpan ke MongoDB semua item pada `cartItems`
 		await CartItem.bulkWrite(
