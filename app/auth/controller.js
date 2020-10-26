@@ -1,23 +1,21 @@
-const User = require('../user/model');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+
+const User = require('../user/model');
 const config = require('../config');
-const getToken = require('../utils/get-token');
+const { getToken } = require('../utils/get-token');
 
 async function login(req, res, next) {
 	passport.authenticate('local', async function(err, user) {
-		console.log(config.secretKey);
 		if (err) return next(err);
 
 		if (!user) return res.json({ error: 1, message: 'email or password incorrect' });
 
 		// (1) buat JSON Web Token
-		let signed = jwt.sign(user, config.secretKey); // <--- ganti secret key dengan keymu sendiri, bebas yang sulit ditebak
+		let signed = jwt.sign(user, config.secretKey);
 		// (2) simpan token tersebut ke user terkait
 		await User.findOneAndUpdate({ _id: user._id }, { $push: { token: signed } }, { new: true });
-
-		console.log(await User.find({}));
 		// (3) response ke _client_
 		return res.json({
 			message: 'logged in successfully',
@@ -75,25 +73,25 @@ function me(req, res, next) {
 	return res.json(req.user);
 }
 
-async function logout(req, res, next) {
-	let token = getToken(req);
-	let user = await User.findOneAndUpdate(
-		{ token: { $in: [ token ] } },
-		{ $pull: { token } },
-		{ useFindAndModify: false }
-	);
+async function logout(req, res, next){
 
-	if (!user || !token) {
-		return res.json({
-			error: 1,
-			message: 'No user found'
-		});
-	}
+  let token = getToken(req);
 
-	return res.json({
-		error: 0,
-		message: 'Logout berhasil'
-	});
+  let user = await User.findOneAndUpdate({token: {$in: [token]}}, {$pull: {token}}, {useFindAndModify: false});
+
+  if(!user || !token){
+     return res.json({
+        error: 1, 
+        message: 'User tidak ditemukan'
+     });
+  }
+
+  // --- logout berhasil ---//
+
+  return res.json({
+    error: 0, 
+    message: 'Logout berhasil'
+  });
 }
 
 module.exports = {
